@@ -1,7 +1,9 @@
 import React from "react";
 
-function GameBoard() {
-  return <p>gameboard</p>;
+function GameBoard(props) {
+  const { gameBoard } = props;
+
+  return <p>{gameBoard}</p>;
 }
 
 export default GameBoard;

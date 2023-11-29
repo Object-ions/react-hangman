@@ -4,9 +4,7 @@ import PropTypes from "prop-types";
 function GuessForm(props) {
   function handleLetterGuess(event) {
     event.preventDefault();
-    props.onLetterSubmission({
-      letter: event.target.letter.value,
-    });
+    props.onLetterSubmission(event.target.letter.value.toLowerCase());
 
     //call on method to check if the letter has already been submitted
 
@@ -16,14 +14,20 @@ function GuessForm(props) {
   return (
     <>
       <form onSubmit={handleLetterGuess}>
-        <input type="submit" name="letter" placeholder="enter letter here" maxLength="1" />
+        <input
+          type="text"
+          name="letter"
+          placeholder="enter letter here"
+          minLength="1"
+          maxLength="1"
+        />
       </form>
     </>
   );
 }
 
 GuessForm.propTypes = {
-  // ??
+  onLetterSubmission: PropTypes.func.isRequired,
 };
 
 export default GuessForm;
