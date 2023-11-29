@@ -1,3 +1,23 @@
 Co-authored-by: Jon Cheng <joncheng.dev@gmail.com>
 Co-authored-by: Moshe Atia <moshikoatia@gmail.com>
 Co-authored-by: Seth Gonzales <sethgonzales157@gmail.com>"
+
+
+
+    // if (this.state.gameOverStatus === true) {
+    //   startGameButton = "Start New Game";
+    // } else {
+    //   startGameButton = "Restart Game";
+    // }
+    // if (this.state.livesRemaining === 0) {
+    //   gameEnd = "You lose.";
+    // } else if (this.state.gameBoard.join("") === this.state.hiddenWord) {
+    //   gameEnd = "You win.";
+    // }
+    // if (this.state.gameOverStatus === true) {
+    //   showGuessFormState = null;
+    // } else {
+    //   showGuessFormState = (
+    //     <GuessForm onLetterSubmission={this.checkIfLetterIsInHiddenWord} />
+    //   );
+    // }

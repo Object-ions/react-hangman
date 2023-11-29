@@ -14,7 +14,7 @@ class GameControl extends React.Component {
       livesRemaining: 6,
       hiddenWord: "apple",
       lettersUsed: [],
-      gameBoard: ["_", "_", "_", "_", "_"],
+      gameBoard: ["_ ", "_ ", "_ ", "_ ", "_"],
       //add spaces
     };
   }
@@ -24,7 +24,7 @@ class GameControl extends React.Component {
       gameOverStatus: false,
       livesRemaining: 6,
       lettersUsed: [],
-      gameBoard: ["_", "_", "_", "_", "_"],
+      gameBoard: ["_ ", "_ ", "_ ", "_ ", "_"],
     });
   };
 
@@ -50,39 +50,78 @@ class GameControl extends React.Component {
           this.state.hiddenWord[index] === letter ? letter : char
         );
 
-        this.setState((prevState) => ({
-          gameBoard: newGameBoard,
-          lettersUsed: [...prevState.lettersUsed, letter],
-        }));
+        this.setState(
+          (prevState) => ({
+            gameBoard: newGameBoard,
+            lettersUsed: [...prevState.lettersUsed, letter],
+          }),
+          () => {
+            // Check for win or lose after the state is updated
+            this.updateWinLoseState();
+          }
+        );
       } else {
         // Decrement lives if the guessed letter is not in the hidden word
-        this.setState((prevState) => ({
-          livesRemaining: prevState.livesRemaining - 1,
-          lettersUsed: [...prevState.lettersUsed, letter],
-        }));
+        this.setState(
+          (prevState) => ({
+            livesRemaining: prevState.livesRemaining - 1,
+            lettersUsed: [...prevState.lettersUsed, letter],
+          }),
+          () => {
+            // Check for win or lose after the state is updated
+            this.updateWinLoseState();
+          }
+        );
       }
+      this.updateWinLoseState();
+    }
+  };
+
+  updateWinLoseState = () => {
+    if (
+      (this.state.livesRemaining === 0 &&
+        this.state.gameOverStatus === false) ||
+      this.state.gameBoard.join("") === this.state.hiddenWord
+    ) {
+      this.setState({
+        gameOverStatus: true,
+      });
     }
   };
 
   render() {
+    // Instantialize conditionally rendered text and components
     let startGameButton = null;
     let gameEnd = null;
+    let showGuessFormState = null;
+    // Determines what is shown -- updates conditionally rendered text and components
     if (this.state.gameOverStatus === true) {
       startGameButton = "Start New Game";
+      showGuessFormState = null;
+      // Determines which Game Over message is shown.
+      if (this.state.livesRemaining === 0) {
+        gameEnd = "You lose.";
+      } else if (this.state.gameBoard.join("") === this.state.hiddenWord) {
+        gameEnd = "You win.";
+      }
     } else {
       startGameButton = "Restart Game";
+      showGuessFormState = (
+        <GuessForm onLetterSubmission={this.checkIfLetterIsInHiddenWord} />
+      );
     }
-    if (this.state.livesRemaining === 0 && this.state.gameOverStatus === true) {
-      gameEnd = "You lose.";
-    } else if (!this.state.gameBoard.includes("_")) {
-      gameEnd = "You win.";
-    }
+
+    // if (this.state.livesRemaining === 0 && this.state.gameOverStatus === true) {
+    //   gameEnd = "You lose.";
+    // } else if (!this.state.gameBoard.includes("_")) {
+    //   gameEnd = "You win.";
+    // }
     return (
       <React.Fragment>
         <Header />
         <button onClick={this.handleStartClick}>{startGameButton}</button>
         <GameOverMessage message={gameEnd} />
-        <GuessForm onLetterSubmission={this.checkIfLetterIsInHiddenWord} />
+        {showGuessFormState}
         <GameBoard gameBoard={this.state.gameBoard} />
         <LettersUsed lettersUsed={this.state.lettersUsed} />
         <LivesRemaining livesRemaining={this.state.livesRemaining} />
