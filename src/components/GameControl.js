@@ -2,6 +2,7 @@ import React from "react";
 import Header from "./Header";
 import GameBoard from "./GameBoard";
 import GuessForm from "./GuessForm";
+import GameOverMessage from "./GameOverMessage";
 import LettersUsed from "./LettersUsed";
 import LivesRemaining from "./LivesRemaining";
 
@@ -13,7 +14,8 @@ class GameControl extends React.Component {
       livesRemaining: 6,
       hiddenWord: "apple",
       lettersUsed: [],
-      gameBoard: ["_ ", "_ ", "_ ", "_ ", "_"],
+      gameBoard: ["_", "_", "_", "_", "_"],
+      //add spaces
     };
   }
 
@@ -22,7 +24,7 @@ class GameControl extends React.Component {
       gameOverStatus: false,
       livesRemaining: 6,
       lettersUsed: [],
-      gameBoard: ["_ ", "_ ", "_ ", "_ ", "_"],
+      gameBoard: ["_", "_", "_", "_", "_"],
     });
   };
 
@@ -64,56 +66,29 @@ class GameControl extends React.Component {
 
   render() {
     let startGameButton = null;
-    // <GameBoard gameBoard={this.state.gameBoard} />;
-
+    let gameEnd = null;
     if (this.state.gameOverStatus === true) {
       startGameButton = "Start New Game";
     } else {
       startGameButton = "Restart Game";
     }
+    if (this.state.livesRemaining === 0 && this.state.gameOverStatus === true) {
+      gameEnd = "You lose.";
+    } else if (!this.state.gameBoard.includes("_")) {
+      gameEnd = "You win.";
+    }
     return (
       <React.Fragment>
         <Header />
         <button onClick={this.handleStartClick}>{startGameButton}</button>
+        <GameOverMessage message={gameEnd} />
         <GuessForm onLetterSubmission={this.checkIfLetterIsInHiddenWord} />
         <GameBoard gameBoard={this.state.gameBoard} />
-        <LettersUsed />
-        <LivesRemaining />
+        <LettersUsed lettersUsed={this.state.lettersUsed} />
+        <LivesRemaining livesRemaining={this.state.livesRemaining} />
       </React.Fragment>
     );
   }
 }
 
 export default GameControl;
-
-// const { dispatch } = this.props;
-// const action = {
-//   type: "TOGGLE_START_GAME",
-// };
-// dispatch(action);
-
-// checkIfLetterIsInHiddenWord = (letter) => {
-//   const matchingIndexPositions = []; //an array of index locations of where the letter shows up in our hidden word
-//   if (!this.state.lettersUsed.contains(letter)) {
-//     // if the letter entered is not in "lettersUsed"
-//     if (this.state.hiddenWord.contains(letter)) {
-//       // Then, we check through the "hiddenWord" for matching characters, noting the index location(s)
-//       let indexes = this.state.hiddenWord.indexOf(letter);
-//       while (indexes !== -1) {
-//         //find the index of the letter in the hidden word, and add it to the game board at the same index
-//         matchingIndexPositions.push(indexes);
-//         indexes = this.state.hiddenWord.indexOf(letter, indexes + 1);
-//       }
-//       // now we update this.state.gameBoard, replacing at "_" with the letter at index locations
-//       for (let i = 0; i < this.state.gameBoard.length; i++) {
-//         for (let j = 0; j < matchingIndexPositions.length; j++) {
-//           if (
-//             valueOf(matchingIndexPositions[j]) === this.state.gameBoard[i]
-//           ) {
-//             this.state.gameBoard[i] = letter;
-//           }
-//         }
-//       }
-//     }
-//   }
-// };

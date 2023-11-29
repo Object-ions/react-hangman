@@ -1,7 +1,8 @@
 import React from "react";
 
-function LettersUsed() {
-  return <p>letterUsed</p>;
+function LettersUsed(props) {
+  const { lettersUsed } = props;
+  return <p>{lettersUsed}</p>;
 }
 
 export default LettersUsed;

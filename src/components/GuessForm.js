@@ -7,7 +7,7 @@ function GuessForm(props) {
     props.onLetterSubmission(event.target.letter.value.toLowerCase());
 
     //call on method to check if the letter has already been submitted
-
+    event.target.reset();
     //
   }
 
@@ -20,6 +20,7 @@ function GuessForm(props) {
           placeholder="enter letter here"
           minLength="1"
           maxLength="1"
+          pattern="[a-zA-Z]+"
         />
       </form>
     </>
