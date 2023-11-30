@@ -3,9 +3,9 @@ import ReactDOM from "react-dom/client";
 import App from "./components/App";
 import { legacy_createStore as createStore } from "redux"; // store
 import { Provider } from "react-redux";
-import reducer from "./reducers/game-over-status-reducer";
+import rootReducer from "./reducers/index";
 
-const store = createStore(reducer);
+const store = createStore(rootReducer);
 
 store.subscribe(() => console.log(store.getState()));
 

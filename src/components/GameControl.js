@@ -13,7 +13,7 @@ class GameControl extends React.Component {
     super(props);
     this.state = {
       // gameOverStatus: true,
-      livesRemaining: 6,
+      // livesRemaining: 6,
       hiddenWord: "apple",
       lettersUsed: [],
       gameBoard: ["_ ", "_ ", "_ ", "_ ", "_"],
@@ -23,13 +23,19 @@ class GameControl extends React.Component {
 
   handleStartClick = () => {
     const { dispatch } = this.props;
-    const action = {
+    const action1 = {
       type: "TOGGLE_GAME_OVER_STATUS",
     };
-    dispatch(action);
+    dispatch(action1);
+
+    const action2 = {
+      type: "DECREMENT_LIFE",
+    };
+    dispatch(action2);
+
     this.setState({
       // gameOverStatus: false,
-      livesRemaining: 6,
+      // livesRemaining: 6,
       lettersUsed: [],
       gameBoard: ["_ ", "_ ", "_ ", "_ ", "_"],
     });
@@ -67,9 +73,15 @@ class GameControl extends React.Component {
         );
       } else {
         // Decrement lives if the guessed letter is not in the hidden word
+        const { dispatch } = this.props;
+        const action2 = {
+          type: "DECREMENT_LIFE",
+        };
+        dispatch(action2);
+
         this.setState(
           (prevState) => ({
-            livesRemaining: prevState.livesRemaining - 1,
+            // livesRemaining: prevState.livesRemaining - 1,
             lettersUsed: [...prevState.lettersUsed, letter],
           }),
           () => {
@@ -83,7 +95,7 @@ class GameControl extends React.Component {
   };
 
   updateWinLoseState = () => {
-    if ((this.state.livesRemaining === 0 && this.props.gameOverStatus === false) || this.state.gameBoard.join("") === this.state.hiddenWord) {
+    if ((this.props.livesRemaining === 0 && this.props.gameOverStatus === false) || this.state.gameBoard.join("") === this.state.hiddenWord) {
       const { dispatch } = this.props;
       const action = {
         type: "TOGGLE_GAME_OVER_STATUS",
@@ -105,7 +117,7 @@ class GameControl extends React.Component {
       startGameButton = "Start New Game";
       showGuessFormState = null;
       // Determines which Game Over message is shown.
-      if (this.state.livesRemaining === 0) {
+      if (this.props.livesRemaining === 0) {
         gameEnd = "You lose.";
       } else if (this.state.gameBoard.join("") === this.state.hiddenWord) {
         gameEnd = "You win.";
@@ -128,7 +140,7 @@ class GameControl extends React.Component {
         {showGuessFormState}
         <GameBoard gameBoard={this.state.gameBoard} />
         <LettersUsed lettersUsed={this.state.lettersUsed} />
-        <LivesRemaining livesRemaining={this.state.livesRemaining} />
+        <LivesRemaining livesRemaining={this.props.livesRemaining} />
       </React.Fragment>
     );
   }
@@ -136,11 +148,13 @@ class GameControl extends React.Component {
 
 GameControl.propTypes = {
   gameOverStatus: PropTypes.bool,
+  livesRemaining: PropTypes.number,
 };
 
 const mapStateToProps = (state) => {
   return {
-    gameOverStatus: state,
+    gameOverStatus: state.gameOverStatus,
+    livesRemaining: state.livesRemaining,
   };
 };
 
