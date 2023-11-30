@@ -5,12 +5,14 @@ import GuessForm from "./GuessForm";
 import GameOverMessage from "./GameOverMessage";
 import LettersUsed from "./LettersUsed";
 import LivesRemaining from "./LivesRemaining";
+import { connect } from "react-redux";
+import PropTypes from "prop-types";
 
 class GameControl extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      gameOverStatus: true,
+      // gameOverStatus: true,
       livesRemaining: 6,
       hiddenWord: "apple",
       lettersUsed: [],
@@ -20,8 +22,13 @@ class GameControl extends React.Component {
   }
 
   handleStartClick = () => {
+    const { dispatch } = this.props;
+    const action = {
+      type: "TOGGLE_GAME_OVER_STATUS",
+    };
+    dispatch(action);
     this.setState({
-      gameOverStatus: false,
+      // gameOverStatus: false,
       livesRemaining: 6,
       lettersUsed: [],
       gameBoard: ["_ ", "_ ", "_ ", "_ ", "_"],
@@ -46,9 +53,7 @@ class GameControl extends React.Component {
 
         //newGameBoard is a copy of the gameBoard, but for each char at each index position
         //IF the hidden word is equal to the letter passed in at an index, make the char in the newGameBoard equal to the letter at the same index
-        const newGameBoard = this.state.gameBoard.map((char, index) =>
-          this.state.hiddenWord[index] === letter ? letter : char
-        );
+        const newGameBoard = this.state.gameBoard.map((char, index) => (this.state.hiddenWord[index] === letter ? letter : char));
 
         this.setState(
           (prevState) => ({
@@ -78,14 +83,15 @@ class GameControl extends React.Component {
   };
 
   updateWinLoseState = () => {
-    if (
-      (this.state.livesRemaining === 0 &&
-        this.state.gameOverStatus === false) ||
-      this.state.gameBoard.join("") === this.state.hiddenWord
-    ) {
-      this.setState({
-        gameOverStatus: true,
-      });
+    if ((this.state.livesRemaining === 0 && this.props.gameOverStatus === false) || this.state.gameBoard.join("") === this.state.hiddenWord) {
+      const { dispatch } = this.props;
+      const action = {
+        type: "TOGGLE_GAME_OVER_STATUS",
+      };
+      dispatch(action);
+      // this.setState({
+      //   gameOverStatus: true,
+      // });
     }
   };
 
@@ -95,7 +101,7 @@ class GameControl extends React.Component {
     let gameEnd = null;
     let showGuessFormState = null;
     // Determines what is shown -- updates conditionally rendered text and components
-    if (this.state.gameOverStatus === true) {
+    if (this.props.gameOverStatus === true) {
       startGameButton = "Start New Game";
       showGuessFormState = null;
       // Determines which Game Over message is shown.
@@ -106,9 +112,7 @@ class GameControl extends React.Component {
       }
     } else {
       startGameButton = "Restart Game";
-      showGuessFormState = (
-        <GuessForm onLetterSubmission={this.checkIfLetterIsInHiddenWord} />
-      );
+      showGuessFormState = <GuessForm onLetterSubmission={this.checkIfLetterIsInHiddenWord} />;
     }
 
     // if (this.state.livesRemaining === 0 && this.state.gameOverStatus === true) {
@@ -129,5 +133,17 @@ class GameControl extends React.Component {
     );
   }
 }
+
+GameControl.propTypes = {
+  gameOverStatus: PropTypes.bool,
+};
+
+const mapStateToProps = (state) => {
+  return {
+    gameOverStatus: state,
+  };
+};
+
+GameControl = connect(mapStateToProps)(GameControl);
 
 export default GameControl;
